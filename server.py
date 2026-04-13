@@ -10,6 +10,7 @@ Transport: stdio
 import json
 from mcp.server.fastmcp import FastMCP
 
+from catalogue import search_items, CATALOGUE_VERSION
 from ndis_knowledge import (
     LEGISLATION,
     PLAN_STRUCTURE,
@@ -278,6 +279,31 @@ def reasonable_and_necessary_checklist() -> str:
             {"criterion": "Not another system", "question": "Is the support NOT more appropriately funded by another system (health, education, housing, transport)?"},
         ],
         "note": "All five criteria must be satisfied. The burden shifts depending on context — in an IRoD or ART appeal, the NDIA must justify its decision against these criteria.",
+    }, indent=2)
+
+
+@mcp.tool()
+def lookup_support_item(query: str, state: str = "", limit: int = 20) -> str:
+    """Search the NDIS Support Catalogue for support items by item number or keyword.
+
+    Returns pricing, unit, registration group, and claiming rules.
+
+    Args:
+        query: Support item number (e.g. '01_002_0107_1_1') or keyword(s) to search item names (e.g. 'self-care weekday')
+        state: Optional state code to show only that state's price. One of: ACT, NSW, NT, QLD, SA, TAS, VIC, WA
+        limit: Maximum number of results to return (default 20)
+    """
+    results = search_items(query, state=state, limit=limit)
+    if not results:
+        return json.dumps({
+            "error": "No matching support items found",
+            "catalogue_version": CATALOGUE_VERSION,
+            "tip": "Try broader keywords or a partial item number",
+        }, indent=2)
+    return json.dumps({
+        "catalogue_version": CATALOGUE_VERSION,
+        "result_count": len(results),
+        "items": results,
     }, indent=2)
 
 
