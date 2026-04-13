@@ -1,7 +1,7 @@
 [project]
 name = "ndis-mcp-server"
 version = "0.1.0"
-description = "NDIS knowledge base MCP server for carers portal development"
+description = "NDIS knowledge base MCP server for Australian disability support"
 requires-python = ">=3.11"
 dependencies = [
     "mcp[cli]>=1.0.0",

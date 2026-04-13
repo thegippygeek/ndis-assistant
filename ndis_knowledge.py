@@ -137,6 +137,26 @@ Three levels:
 1. **Support Connection** — Light-touch help connecting to services
 2. **Support Coordination** — Ongoing coordination, plan implementation, provider liaison
 3. **Specialist Support Coordination** — For complex situations involving multiple systems (health, justice, housing, child protection)
+
+## Funding
+Support Coordination is funded under **Capacity Building — Improved Life Choices**. This line item is locked (not flexible with other Capacity Building categories).
+
+## Changing Your Support Coordinator
+
+A participant can change their Support Coordinator **at any time** — there is no lock-in period under the NDIS. NDIA approval is not required to switch providers.
+
+### Process
+1. **Find a new Support Coordinator** — Check they are registered (if agency-managed) or suitable (if plan/self-managed). Confirm they have capacity.
+2. **Review your service agreement** — Check the notice period (typically 2–4 weeks). There may be a reasonable notice clause.
+3. **Notify your current coordinator in writing** — Provide the required notice. Request a handover summary including current service bookings, outstanding actions or referrals, and any reports or assessments in progress.
+4. **Sign a new service agreement** with the incoming coordinator.
+5. **Update service bookings** — If agency-managed, the new coordinator creates a new service booking in the NDIA portal and the old booking is ended. If plan-managed, notify the plan manager.
+6. **Handover** — The outgoing coordinator should provide a professional handover to the incoming one (with the participant's consent).
+
+### Things to Watch
+- **Remaining funding** — Both coordinators claim from the same Improved Life Choices line item. Check the balance before switching.
+- **Cancellation fees** — The outgoing provider may charge for the notice period under PAPL cancellation rules.
+- **Timing** — If the plan is close to reassessment, consider whether to switch now or wait for the new plan.
 """
 
 ASSISTIVE_TECHNOLOGY = """

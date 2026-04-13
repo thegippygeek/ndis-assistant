@@ -2,9 +2,9 @@
 NDIS Assistant MCP Server
 
 Exposes NDIS knowledge as resources, tools, and prompts for use in
-VS Code (Copilot/Claude) while developing the carers portal.
+VS Code (Copilot/Claude) and Claude Code.
 
-Transport: stdio (for local VS Code use)
+Transport: stdio
 """
 
 import json
@@ -358,29 +358,6 @@ Use the following structure:
 
 Tone: Formal, legally precise, evidence-based. Cite specific sections of legislation and Rules.
 Do NOT use emotional language."""
-
-
-@mcp.prompt()
-def carers_portal_form_guidance(form_purpose: str) -> str:
-    """Get NDIS-informed guidance for building a form in the carers portal.
-
-    Args:
-        form_purpose: What the form is for — e.g., "participant intake", "incident report", "support log", "CoC request", "daily care record"
-    """
-    return f"""You are helping build a carers portal web application. The user needs guidance on
-building a form for: {form_purpose}
-
-Provide:
-1. Required fields based on NDIS requirements and best practice
-2. Validation rules (what's mandatory, format constraints, NDIS-specific validation like NDIS number format)
-3. Data that would be useful for NDIS evidence and submissions
-4. Any NDIS-specific terminology or categories that should be used (support categories, plan types, etc.)
-5. Accessibility considerations (the portal may be used by people with disabilities)
-
-Reference the NDIS Act, Rules, and operational guidelines where relevant.
-The NDIS number format is typically a 9-digit number.
-Support categories should align with Core/Capacity Building/Capital structure.
-Plan management types are: Agency-managed, Plan-managed, Self-managed."""
 
 
 @mcp.prompt()

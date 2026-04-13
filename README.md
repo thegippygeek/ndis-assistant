@@ -1,6 +1,6 @@
 # NDIS Assistant MCP Server
 
-An MCP (Model Context Protocol) server that exposes NDIS knowledge as tools, resources, and prompts for use in VS Code while developing the carers portal.
+An MCP (Model Context Protocol) server that exposes NDIS knowledge as tools, resources, and prompts for use in VS Code and Claude Code.
 
 ## What's Included
 
@@ -30,7 +30,6 @@ An MCP (Model Context Protocol) server that exposes NDIS knowledge as tools, res
 ### Prompts (templates)
 - `coc_submission` — Draft a Change of Circumstances letter
 - `irod_submission` — Draft an Internal Review of Decision submission
-- `carers_portal_form_guidance` — Get NDIS-informed guidance for portal form design
 - `evidence_report_template` — Generate a structured evidence report template
 
 ## Setup
@@ -61,7 +60,7 @@ mcp dev server.py
 
 ### 3. Configure VS Code
 
-Create or edit `.vscode/mcp.json` in your carers portal project:
+Create or edit `.vscode/mcp.json` in your project:
 
 ```json
 {
@@ -102,7 +101,6 @@ claude mcp add ndis-assistant -- python /path/to/ndis-mcp-server/server.py
 Once configured, the MCP tools and resources will be available to your AI assistant (Copilot/Claude) in VS Code. You can ask things like:
 
 - "What NDIS support category does SIL fall under?" → triggers `lookup_support_category`
-- "What fields should an incident report form have?" → triggers `carers_portal_form_guidance` prompt
 - "The participant's SDA was denied, what process should we use?" → triggers `which_process`
 - "What are the s34 reasonable and necessary criteria?" → triggers `reasonable_and_necessary_checklist`
 
@@ -116,6 +114,6 @@ To add more knowledge or tools:
 
 ### Ideas for Future Tools
 - Query the NDIS Support Catalogue XLSX for live price lookups
-- Query the NDIS data portal CSVs for benchmark comparisons
+- Query NDIS data for benchmark comparisons
 - Validate NDIS number format (Luhn check or regex)
 - Calculate annual support costs from a roster/schedule
