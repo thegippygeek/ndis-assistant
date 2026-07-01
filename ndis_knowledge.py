@@ -242,13 +242,13 @@ The NDIA publishes pricing at https://www.ndis.gov.au/providers/pricing-arrangem
 
 | Document | Format | Purpose |
 |---|---|---|
-| **PAPL** | PDF/DOCX | The rules — how price controls work, claiming rules |
+| **NDIS Pricing Schedule** (formerly PAPL) | PDF/DOCX | The rules — how price controls work, claiming rules. Renamed from "Pricing Arrangements and Price Limits" for 2026-27 |
 | **NDIS Support Catalogue** | XLSX | The price list — every support item number, description, price limit |
 | **AT/HM/Consumables Code Guide** | PDF/DOCX | Common AT and home modification support items |
 | **DSW Cost Model** | DOCX | How the NDIA calculates disability support worker hourly costs |
 | **SDA Pricing Arrangements** | Separate page | SDA-specific pricing and calculator |
 
-Current version: **2025-26 v1.1**, effective 24 November 2025.
+Current version: **2026-27 v1.0**, effective 1 July 2026. From 2026-27 the catalogue lists a single **National** price limit per support item (the earlier per-state price columns were removed); remote and very remote loadings still apply separately.
 
 ## Key Pricing Concepts
 - **Price limits** are maximums for registered providers (agency-managed or plan-managed). Self-managed can pay above.
