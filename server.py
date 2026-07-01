@@ -290,7 +290,7 @@ def lookup_support_item(query: str, state: str = "", limit: int = 20) -> str:
 
     Args:
         query: Support item number (e.g. '01_002_0107_1_1') or keyword(s) to search item names (e.g. 'self-care weekday')
-        state: Optional state code to show only that state's price. One of: ACT, NSW, NT, QLD, SA, TAS, VIC, WA
+        state: Deprecated from 2026-27 — price limits are now National, so this no longer changes the price returned. Retained for backward compatibility.
         limit: Maximum number of results to return (default 20)
     """
     results = search_items(query, state=state, limit=limit)

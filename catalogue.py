@@ -7,12 +7,13 @@ import os
 from pathlib import Path
 from openpyxl import load_workbook
 
-CATALOGUE_PATH = Path(__file__).parent / "assets" / "NDIS-Support Catalogue-2025-26 -v1.1.xlsx"
-CATALOGUE_VERSION = "2025-26 v1.1"
+CATALOGUE_PATH = Path(__file__).parent / "assets" / "NDIS Support Catalogue- 2026-27 v1.0.xlsx"
+CATALOGUE_VERSION = "2026-27 v1.0"
 
 _items: list[dict] = []
 
-STATES = ["ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"]
+# From 2026-27 the catalogue uses a single National price limit; the previous
+# per-state columns (ACT/NSW/NT/QLD/SA/TAS/VIC/WA) were removed on 1 July 2026.
 
 
 def _load_catalogue() -> list[dict]:
@@ -46,12 +47,11 @@ def search_items(query: str, state: str = "", limit: int = 20) -> list[dict]:
 
     Args:
         query: Support item number (e.g. '01_002_0107_1_1') or keyword(s) to search names
-        state: Optional state code (ACT, NSW, NT, QLD, SA, TAS, VIC, WA) to show that state's price
+        state: Deprecated from 2026-27 — pricing is now National, so this no longer affects the price returned. Retained for backward compatibility.
         limit: Max results to return
     """
     items = get_items()
     query_lower = query.lower().strip()
-    state_upper = state.upper().strip() if state else ""
 
     results = []
     for item in items:
@@ -86,20 +86,9 @@ def search_items(query: str, state: str = "", limit: int = 20) -> list[dict]:
             "type": item.get("Type"),
         }
 
-        # Add pricing
-        if state_upper and state_upper in STATES:
-            price = item.get(state_upper)
-            entry["price"] = price
-            entry["price_state"] = state_upper
-        else:
-            # Include all state prices
-            prices = {}
-            for s in STATES:
-                val = item.get(s)
-                if val is not None:
-                    prices[s] = val
-            if prices:
-                entry["prices"] = prices
+        # Add pricing — from 2026-27 the catalogue lists a single National price limit
+        entry["price"] = item.get("National")
+        entry["price_basis"] = "National"
 
         # Add remote pricing
         remote = item.get("Remote")
