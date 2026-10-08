@@ -41,15 +41,16 @@ An MCP (Model Context Protocol) server that exposes NDIS knowledge as tools, res
 ### 1. Install dependencies
 
 ```bash
-cd ndis-mcp-server
+git clone https://github.com/thegippygeek/ndis-assistant.git
+cd ndis-assistant
 pip install -e .
 ```
 
 Or with uv (recommended):
 
 ```bash
-cd ndis-mcp-server
-uv pip install -e .
+cd ndis-assistant
+uv sync
 ```
 
 ### 2. Test locally
@@ -72,7 +73,7 @@ Create or edit `.vscode/mcp.json` in your project:
     "ndis-assistant": {
       "type": "stdio",
       "command": "python",
-      "args": ["/path/to/ndis-mcp-server/server.py"]
+      "args": ["/path/to/ndis-assistant/server.py"]
     }
   }
 }
@@ -86,7 +87,7 @@ If using **uv** (cleaner, handles venv automatically):
     "ndis-assistant": {
       "type": "stdio",
       "command": "uv",
-      "args": ["run", "--directory", "/path/to/ndis-mcp-server", "python", "server.py"]
+      "args": ["run", "--directory", "/path/to/ndis-assistant", "python", "server.py"]
     }
   }
 }
@@ -97,7 +98,7 @@ If using **uv** (cleaner, handles venv automatically):
 If you also want this in Claude Code, add to your Claude Code MCP config:
 
 ```bash
-claude mcp add ndis-assistant -- python /path/to/ndis-mcp-server/server.py
+claude mcp add ndis-assistant -- python /path/to/ndis-assistant/server.py
 ```
 
 ## Example Usage in VS Code

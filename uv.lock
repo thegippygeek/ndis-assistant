@@ -345,8 +345,8 @@ wheels = [
 ]
 
 [[package]]
-name = "ndis-mcp-server"
-version = "0.2.0"
+name = "ndis-assistant"
+version = "0.2.1"
 source = { editable = "." }
 dependencies = [
     { name = "mcp", extra = ["cli"] },
