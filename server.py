@@ -10,7 +10,9 @@ Transport: stdio
 import json
 from mcp.server.fastmcp import FastMCP
 
-from catalogue import search_items, CATALOGUE_VERSION
+from pydantic import BaseModel, Field
+
+from catalogue import search_items, compare_rate, CATALOGUE_VERSION
 from ndis_knowledge import (
     LEGISLATION,
     PLAN_STRUCTURE,
@@ -390,6 +392,56 @@ def lookup_support_item(query: str, state: str = "", limit: int = 20) -> str:
         "catalogue_version": CATALOGUE_VERSION,
         "result_count": len(results),
         "items": results,
+    }, indent=2)
+
+
+class PriceLine(BaseModel):
+    item_number: str = Field(description="Exact support item number, e.g. '01_011_0107_1_1'")
+    rate: float = Field(description="Rate charged per unit (e.g. per hour)")
+    quantity: float = Field(default=0, description="Units charged (optional; enables totals)")
+
+
+@mcp.tool()
+def benchmark_prices(lines: list[PriceLine], location: str = "national", management_type: str = "") -> str:
+    """Benchmark rates charged for NDIS support items against the Support Catalogue price limits.
+
+    Use for a single quoted rate or a whole invoice/service agreement. Flags lines over the price limit and totals any overcharge.
+
+    Args:
+        lines: One entry per support item: item_number, rate charged per unit, and optional quantity
+        location: national (MMM 1-5), remote (MMM 6) or very_remote (MMM 7)
+        management_type: agency, plan or self — determines whether the price limit is binding (optional)
+    """
+    results = [compare_rate(l.item_number, l.rate, l.quantity, location) for l in lines]
+    over = [r for r in results if r["status"] == "over_limit"]
+    summary = {
+        "lines": len(results),
+        "over_limit": len(over),
+        "not_benchmarkable": sum(r["status"] in ("quote_based", "dollar_value_item", "no_price_limit", "not_found") for r in results),
+    }
+    if any(r.get("total_charged") is not None for r in results):
+        summary["total_charged"] = round(sum(r.get("total_charged", 0) for r in results), 2)
+        summary["total_at_limit"] = round(sum(r.get("total_at_limit", 0) for r in results), 2)
+        summary["total_over_limit"] = round(sum(r.get("total_over_limit", 0) for r in results), 2)
+
+    mt = management_type.lower()
+    if mt.startswith(("agency", "ndia", "plan")):
+        binding = "Price limits are binding: amounts over the limit cannot be claimed from the plan."
+    elif mt.startswith("self"):
+        binding = "Self-managed: price limits are not binding, but paying above them uses more of the budget and is relevant to value for money (s 34(1)(c))."
+    else:
+        binding = "Price limits are binding for agency- and plan-managed participants; self-managed participants may pay above them."
+
+    return json.dumps({
+        "catalogue_version": CATALOGUE_VERSION,
+        "summary": summary,
+        "price_limit_rule": binding,
+        "results": results,
+        "notes": [
+            "Rates for the wrong time of day or day of week will compare against the wrong item: check the item number matches when the support was delivered.",
+            "Remote/very remote limits apply by the participant's MMM location, not the provider's.",
+            "Pricing Schedule rules (cancellations, provider travel, non-face-to-face) can change what is claimable even when the rate is within the limit.",
+        ],
     }, indent=2)
 
 

@@ -105,3 +105,76 @@ def search_items(query: str, state: str = "", limit: int = 20) -> list[dict]:
         formatted.append(entry)
 
     return formatted
+
+
+LOCATION_COLUMNS = {"national": "National", "remote": "Remote", "very_remote": "Very Remote"}
+
+
+def find_item(item_number: str) -> dict | None:
+    """Return the raw catalogue record for an exact support item number, or None."""
+    key = item_number.strip().lower()
+    for item in get_items():
+        if str(item.get("Support Item Number", "")).lower() == key:
+            return item
+    return None
+
+
+def compare_rate(item_number: str, rate: float, quantity: float = 0, location: str = "national") -> dict:
+    """Compare a charged rate for one support item against its catalogue price limit.
+
+    Args:
+        item_number: Exact support item number
+        rate: Rate charged per unit (e.g. per hour)
+        quantity: Units charged (optional; enables totals)
+        location: national, remote or very_remote (MMM 6 / MMM 7 loadings)
+    """
+    item = find_item(item_number)
+    if item is None:
+        return {"item_number": item_number, "status": "not_found",
+                "note": "Item number not in the current catalogue — check for typos or a superseded item."}
+
+    location = location.lower().replace(" ", "_").replace("-", "_")
+    if location not in LOCATION_COLUMNS:
+        location = "national"
+
+    result = {
+        "item_number": item.get("Support Item Number"),
+        "name": item.get("Support Item Name"),
+        "unit": item.get("Unit"),
+        "charged_rate": rate,
+        "location": location,
+    }
+
+    if item.get("Quote") == "Yes":
+        result["status"] = "quote_based"
+        result["note"] = "Quotable support — no catalogue price limit. Benchmark against the agreed quote instead."
+        return result
+    if item.get("Type") == "Unit Price = $1":
+        result["status"] = "dollar_value_item"
+        result["note"] = "Claimed as a dollar amount ($1 per unit) — there is no rate to benchmark. Check the total against the agreed cost."
+        return result
+
+    limits = {loc: item.get(col) for loc, col in LOCATION_COLUMNS.items()}
+    limit = limits[location]
+    if limit is None and location != "national":
+        limit = limits["national"]
+        result["note"] = f"No {location.replace('_', ' ')} price listed; benchmarked against the National limit."
+    if limit is None:
+        result["status"] = "no_price_limit"
+        result["note"] = "No price limit in the catalogue for this item (e.g. participant-specific SIL or interpreting). Benchmark against the service agreement or quote."
+        return result
+
+    diff = round(rate - limit, 2)
+    result.update({
+        "price_limit": limit,
+        "all_location_limits": {k: v for k, v in limits.items() if v is not None},
+        "difference": diff,
+        "percent_of_limit": round(rate / limit * 100, 1),
+        "status": "over_limit" if diff > 0.005 else "at_limit" if diff > -0.005 else "under_limit",
+    })
+    if quantity:
+        result["quantity"] = quantity
+        result["total_charged"] = round(rate * quantity, 2)
+        result["total_at_limit"] = round(limit * quantity, 2)
+        result["total_over_limit"] = round(max(diff, 0) * quantity, 2)
+    return result
