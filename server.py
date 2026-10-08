@@ -20,6 +20,7 @@ from ndis_knowledge import (
     ASSISTIVE_TECHNOLOGY,
     EVIDENCE_REPORTS,
     OT_REPORTS,
+    REPORT_QUALITY,
     PRICING,
     LEGISLATIVE_AMENDMENTS,
     KEY_RESOURCES,
@@ -48,7 +49,7 @@ mcp = FastMCP(
 
 @mcp.resource("ndis://legislation")
 def legislation() -> str:
-    """NDIS legislation hierarchy and critical legal distinctions (s34 reasonable and necessary, SDA vs SIL)"""
+    """NDIS legislation hierarchy and critical legal distinctions (amended s 34 reasonable and necessary, SDA vs SIL)"""
     return LEGISLATION
 
 
@@ -92,6 +93,12 @@ def evidence_reports() -> str:
 def ot_reports() -> str:
     """OT report types and standard FCA template structure"""
     return OT_REPORTS
+
+
+@mcp.resource("ndis://report-quality")
+def report_quality() -> str:
+    """What makes an evidence report carry weight at the Tribunal — lessons from Butler v NDIA [2025] ARTA 1579"""
+    return REPORT_QUALITY
 
 
 @mcp.resource("ndis://pricing")
@@ -267,18 +274,97 @@ def which_process(situation: str) -> str:
 
 @mcp.tool()
 def reasonable_and_necessary_checklist() -> str:
-    """Return the s34 reasonable and necessary criteria checklist for evaluating whether an NDIS support meets the legal test."""
+    """Return the s 34(1) reasonable and necessary criteria checklist (as amended from 3 October 2024) for evaluating whether an NDIS support meets the legal test."""
     return json.dumps({
-        "section": "s34 NDIS Act 2013",
-        "test": "A support is reasonable and necessary if it:",
+        "section": "s 34(1) NDIS Act 2013 (as amended by the Getting the NDIS Back on Track No 1 Act 2024)",
+        "test": "For each support, the decision-maker must be satisfied of all of the following:",
         "criteria": [
-            {"criterion": "Related to disability", "question": "Is the support related to the participant's disability?"},
-            {"criterion": "Value for money", "question": "Does the support represent value for money compared to alternatives?"},
-            {"criterion": "Effective and beneficial", "question": "Is the support likely to be effective and beneficial for the participant?"},
-            {"criterion": "Informal supports", "question": "Does it take into account what informal supports (family, community) are reasonable to expect?"},
-            {"criterion": "Not another system", "question": "Is the support NOT more appropriately funded by another system (health, education, housing, transport)?"},
+            {"para": "(aa)", "criterion": "Necessary for the s 24/s 25 impairment", "question": "Is the support necessary to address needs arising from an impairment for which the participant meets the disability (s 24) or early intervention (s 25) requirements?"},
+            {"para": "(a)", "criterion": "Goals", "question": "Will the support assist the participant to pursue the goals, objectives and aspirations in their statement of goals and aspirations?"},
+            {"para": "(b)", "criterion": "Social and economic participation", "question": "Will the support assist the participant to undertake activities that facilitate their social and economic participation?"},
+            {"para": "(c)", "criterion": "Value for money", "question": "Are the costs reasonable relative to both the benefits achieved and the cost of alternative support? (Supports for Participants Rules r 3.1)"},
+            {"para": "(d)", "criterion": "Effective and beneficial", "question": "Will the support be, or is it likely to be, effective and beneficial, having regard to current good practice? (r 3.2-3.3)"},
+            {"para": "(e)", "criterion": "Informal supports", "question": "Does the funding take account of what it is reasonable to expect families, carers, informal networks and the community to provide?"},
+            {"para": "(f)", "criterion": "NDIS support", "question": "Is it an NDIS support under s 10, i.e. within Schedule 1 and not excluded by Schedule 2 of the NDIS Supports Transitional Rules 2024?"},
         ],
-        "note": "All five criteria must be satisfied. The burden shifts depending on context — in an IRoD or ART appeal, the NDIA must justify its decision against these criteria.",
+        "applying_the_test": [
+            "The criteria are cumulative: failing any one is fatal (Butler [2025] ARTA 1579 at [48], [83]).",
+            "Check s 34(1)(f) first: Schedule 2 exclusions, then Schedule 1 categories (FSWN [2025] ARTA 114, adopted in Butler at [61]-[65]).",
+            "The decision-maker (including the ART on review) must be positively satisfied of each criterion on the evidence (Butler at [80]). Where a support is already funded, the evidence must justify the increase (Butler at [104(a)]).",
+            "Needs from impairments that do not meet s 24 may be relevant only insofar as they affect needs arising from the s 24 impairment (s 34(1) Note (b)); they do not themselves ground supports (Butler at [10]).",
+        ],
+        "which_version": "The amended s 34 applies to a plan approved or varied on or after 3 October 2024, regardless of when the plan started (Amending Act Sch 1 item 129). The pre-amendment test had no (aa), and its (f) asked whether the support is most appropriately funded through the NDIS rather than another system.",
+        "see_also": ["ndis://legislation", "ndis://report-quality", "report_quality_checklist"],
+    }, indent=2)
+
+
+@mcp.tool()
+def report_quality_checklist() -> str:
+    """Return a pre-submission quality checklist for therapist/evidence reports, based on why the Tribunal gave expert reports little weight in Butler v NDIA [2025] ARTA 1579. Each check cites the paragraph of the decision it comes from."""
+    return json.dumps({
+        "source": "Butler and National Disability Insurance Agency (NDIS) [2025] ARTA 1579 (28 August 2025)",
+        "source_url": "https://www.austlii.edu.au/cgi-bin/viewdoc/au/cases/cth/ARTA/2025/1579.html",
+        "outcome": "Decision affirmed; every disputed support refused, mostly for failing s 34(1)(aa) (necessary for s 24 impairment) and s 34(1)(c) (value for money).",
+        "ai_position": "'The practitioner must, however, be responsible and accountable for the content of a report.' [104(d)]",
+        "checks": [
+            {
+                "lesson": "AI is a tool, not a substitute",
+                "questions": [
+                    "If AI assisted drafting, does it only write up the author's own observations and assessments? [104(d)]",
+                    "Can the named author explain and defend every phrase, including anything added by AI or a supervisor? [104(d)]",
+                    "Has the author personally checked every citation? [104(d)]",
+                ],
+            },
+            {
+                "lesson": "Check and correct errors",
+                "questions": [
+                    "Are location, living situation, diagnoses, plan details and dates correct, especially facts relied on to justify a recommendation? [104(d)]",
+                    "Are there copy-paste remnants from other reports or templates?",
+                    "Are apparent contradictions in the evidence (e.g. functional limits vs activities the participant still does) reconciled? [99(b)], [142(d)(i)]",
+                ],
+            },
+            {
+                "lesson": "Base recommendations on direct assessment and observation",
+                "questions": [
+                    "Does the report state the nature and extent of contact: face-to-face vs telehealth, number and length of sessions, settings? [73(e)], [104(d)]",
+                    "Is observed or measured information distinguished from self-report? [104(e)]",
+                    "Are conclusions proportionate to the assessment (not 'minimum necessary' after a single telehealth session)? [70]",
+                    "Has AT been trialled in the participant's actual environment? [142(c)]",
+                ],
+            },
+            {
+                "lesson": "Separate s 24 disabilities from other conditions",
+                "questions": [
+                    "Is each functional impact and support attributed to an impairment for which the participant meets s 24 (s 34(1)(aa))? [104(b)], [129(a)]",
+                    "Are needs from other health conditions identified and excluded, with the proportion of hours relating to s 24 disabilities estimated? [118(e)], [118(f)]",
+                    "Does any justification rely on attributes that are not s 24 disabilities? [142(d)(iv)]",
+                ],
+            },
+            {
+                "lesson": "Provide clear reasoning against every s 34(1) criterion",
+                "questions": [
+                    "Is the support within a Schedule 1 category and not excluded by Schedule 2 of the NDIS Supports Transitional Rules (s 34(1)(f))? [61]-[65]",
+                    "Is it the author's own clinical opinion, not a repeat of a list supplied by the participant? [18], [104(e)], [112(b)]",
+                    "If the participant already receives this support, does the report justify the increase rather than the general merit of the support? [104(a)]",
+                    "Are existing plan supports and overlap with other requested supports addressed? [88], [112(a)], [129(c)]",
+                    "Is value for money shown with actual costings and alternatives, not just asserted as 'cost effective'? [142(a)(iv)], [129(f)], [146(a)]",
+                    "Is the recommended intensity consistent with the participant's current functional capacity and tolerance? [118(a)]-[118(b)]",
+                    "Is current good practice evidence cited (s 34(1)(d))? [138(b)]",
+                    "Are specifics given: frequency, duration, alternatives already tried? [142(b)]",
+                ],
+            },
+            {
+                "lesson": "Avoid an advocacy tone; be independent",
+                "questions": [
+                    "Is the language neutral and clinical, free of criticism of the NDIA or persuasive framing? [104(c)]",
+                    "Are opinions confined to the author's expertise and personal assessment? [104(e)]",
+                    "Is any interest in providing the recommended supports disclosed? [104(a)], [112(b)]",
+                    "Are limitations and contrary evidence acknowledged?",
+                    "Is the author prepared to be cross-examined on the report? [89], [104(d)]",
+                ],
+            },
+        ],
+        "see_also": ["ndis://report-quality", "ndis://evidence-reports", "reasonable_and_necessary_checklist"],
     }, indent=2)
 
 
@@ -410,7 +496,54 @@ Follow the standard NDIS evidence report structure:
 7. Recommendations (specific, costed, tied to NDIS support items)
 
 Use professional, clinical language. Include prompts for NDIS-specific data points.
-Reference s34 NDIS Act 2013 criteria in the recommendations section."""
+Reference s34 NDIS Act 2013 criteria in the recommendations section.
+
+Build in the Tribunal's expectations from Butler v NDIA [2025] ARTA 1579 (see ndis://report-quality):
+- An assessment methods section recording the nature and extent of contact (face-to-face vs telehealth, sessions, settings, standardised tools, collateral sources)
+- Prompts to distinguish observed, measured and self-reported information
+- Prompts to attribute each functional impact to a specific NDIS-recognised impairment, separate from other health conditions
+- For each recommendation, reasoning against every s34 criterion and alternatives considered
+- A limitations section
+- Neutral expert tone — the author is an independent expert, not an advocate"""
+
+
+@mcp.prompt()
+def review_report(report_text: str, report_type: str = "") -> str:
+    """Review a draft NDIS therapist/evidence report for weaknesses the Tribunal identified in Butler v NDIA [2025] ARTA 1579.
+
+    Args:
+        report_text: The full text of the draft report to review
+        report_type: Type of report (optional) — e.g., "OT functional capacity assessment", "physiotherapy report"
+    """
+    return f"""Review the following draft NDIS {report_type or "evidence"} report as the Administrative Review Tribunal would weigh it as expert evidence.
+
+Use the lessons from Butler and National Disability Insurance Agency (NDIS) [2025] ARTA 1579 (ndis://report-quality). There the Tribunal gave expert reports little weight and refused the supports they backed, mostly under s 34(1)(aa) and (c) of the amended NDIS Act 2013. Assess the report against each of the six lessons:
+
+1. AI drafting: flag generic, unexplained or out-of-place phrasing the author may not be able to defend, and citations that need checking [104(d)]
+2. Errors and contradictions: flag factual errors, internal inconsistencies, copy-paste remnants, and unreconciled contradictions between stated limitations and what the participant still does [99(b)], [104(d)]
+3. Basis of assessment: is the nature and extent of contact stated? Is observed or measured information distinguished from self-report? Are conclusions proportionate to the assessment? [73(e)], [104(e)]
+4. Disability attribution: is each functional impact and support linked to an impairment meeting s 24, with other health conditions identified and excluded? [104(b)], [118(f)]
+5. Reasoning: for each recommended support, check:
+   - the Schedule 1 / Schedule 2 position
+   - justification for any increase over existing supports
+   - overlap with other supports
+   - value for money with actual costings and alternatives
+   - intensity matched to current function
+   - current good practice evidence
+   Flag any support that appears to be transcribed from the participant's own list [18], [104(a)], [112(b)], [142(a)(iv)]
+6. Independence and tone: flag advocacy, emotive or NDIA-critical language, opinions outside the author's expertise, and any undisclosed interest in providing the supports [104(c)], [104(e)]
+
+Output:
+- Overall rating of likely evidentiary weight (strong / moderate / weak) with a one-paragraph rationale
+- A table of issues: location in report, lesson, issue, suggested fix
+- A list of recommended supports with a verdict on whether each is adequately reasoned
+- Information the author needs to add or verify before submission
+
+Do not invent facts to fill gaps — identify them as gaps.
+
+--- REPORT START ---
+{report_text}
+--- REPORT END ---"""
 
 
 def main():
