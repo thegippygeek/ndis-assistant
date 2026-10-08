@@ -27,6 +27,7 @@ An MCP (Model Context Protocol) server that exposes NDIS knowledge as tools, res
 - `lookup_support_coordination_level` — Coordination level details
 - `which_process` — Determine the right process (CoC vs IRoD vs reassessment) from a situation description
 - `reasonable_and_necessary_checklist` — s 34(1)(aa)–(f) criteria checklist (as amended from 3 October 2024)
+- `benchmark_prices` — Benchmark charged rates (single item or whole invoice) against Support Catalogue price limits, flagging overcharges
 - `report_quality_checklist` — Pre-submission quality checklist for therapist reports (Butler v NDIA lessons)
 
 ### Prompts (templates)
@@ -106,6 +107,7 @@ Once configured, the MCP tools and resources will be available to your AI assist
 - "What NDIS support category does SIL fall under?" → triggers `lookup_support_category`
 - "The participant's SDA was denied, what process should we use?" → triggers `which_process`
 - "What are the s34 reasonable and necessary criteria?" → triggers `reasonable_and_necessary_checklist`
+- "Our provider charges $95/hr for 01_011_0107_1_1, is that over the limit?" → triggers `benchmark_prices`
 
 ## Extending
 
@@ -116,7 +118,5 @@ To add more knowledge or tools:
 3. Restart VS Code to pick up changes
 
 ### Ideas for Future Tools
-- Query the NDIS Support Catalogue XLSX for live price lookups
-- Query NDIS data for benchmark comparisons
 - Validate NDIS number format (Luhn check or regex)
 - Calculate annual support costs from a roster/schedule

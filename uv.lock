@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.11"
 
 [[package]]
@@ -346,17 +346,19 @@ wheels = [
 
 [[package]]
 name = "ndis-mcp-server"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "mcp", extra = ["cli"] },
     { name = "openpyxl" },
+    { name = "pydantic" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "mcp", extras = ["cli"], specifier = ">=1.0.0" },
+    { name = "mcp", extras = ["cli"], specifier = ">=1.2.0" },
     { name = "openpyxl", specifier = ">=3.1.0" },
+    { name = "pydantic", specifier = ">=2.0" },
 ]
 
 [[package]]
