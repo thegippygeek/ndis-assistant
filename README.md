@@ -13,6 +13,7 @@ An MCP (Model Context Protocol) server that exposes NDIS knowledge as tools, res
 - `ndis://assistive-technology` — Funding tiers and requirements
 - `ndis://evidence-reports` — Report structure and writing principles
 - `ndis://ot-reports` — OT report types and FCA template
+- `ndis://report-quality` — What makes reports carry weight at the Tribunal (Butler v NDIA [2025] ARTA 1579, incl. generative AI)
 - `ndis://pricing` — Support Catalogue, pricing concepts
 - `ndis://legislative-amendments` — 2024–2026 changes
 - `ndis://key-resources` — URLs, phone numbers, data portals
@@ -25,12 +26,14 @@ An MCP (Model Context Protocol) server that exposes NDIS knowledge as tools, res
 - `lookup_at_tier` — AT funding tier and approval requirements
 - `lookup_support_coordination_level` — Coordination level details
 - `which_process` — Determine the right process (CoC vs IRoD vs reassessment) from a situation description
-- `reasonable_and_necessary_checklist` — s34 criteria checklist
+- `reasonable_and_necessary_checklist` — s 34(1)(aa)–(f) criteria checklist (as amended from 3 October 2024)
+- `report_quality_checklist` — Pre-submission quality checklist for therapist reports (Butler v NDIA lessons)
 
 ### Prompts (templates)
 - `coc_submission` — Draft a Change of Circumstances letter
 - `irod_submission` — Draft an Internal Review of Decision submission
 - `evidence_report_template` — Generate a structured evidence report template
+- `review_report` — Review a draft report for weaknesses the Tribunal identified in Butler v NDIA
 
 ## Setup
 
